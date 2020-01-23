@@ -36,6 +36,11 @@ class PersistanceHelper {
         }
     }
     
+    public func sync(photoObjs: [Photo]){
+        self.photoObjs = photoObjs
+        try? save()
+    }
+    
     public func create(photoObj: Photo) throws {
         photoObjs.append(photoObj)
         

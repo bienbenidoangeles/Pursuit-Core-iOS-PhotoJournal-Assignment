@@ -23,15 +23,6 @@ class PhotoCell: UICollectionViewCell {
     @IBAction func photoOptionsButtonPressed(_ sender: UIButton) {
         
         delegate.didPressOptionalButton(self)
-        
-//        let alertVC = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-//        let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: nil)
-//        let editAction = UIAlertAction(title: "Edit", style: .default, handler: nil)
-//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-//        alertVC.addAction(deleteAction)
-//        alertVC.addAction(editAction)
-//        alertVC.addAction(cancelAction)
-//        present(alertVC, animation: true)
     }
     
     override func layoutSubviews() {
