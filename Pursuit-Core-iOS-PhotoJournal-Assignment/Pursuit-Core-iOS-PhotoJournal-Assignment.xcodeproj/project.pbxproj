@@ -9,11 +9,15 @@
 /* Begin PBXBuildFile section */
 		F110279423D7A4B0000758F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F110279323D7A4B0000758F7 /* AppDelegate.swift */; };
 		F110279623D7A4B0000758F7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F110279523D7A4B0000758F7 /* SceneDelegate.swift */; };
-		F110279823D7A4B0000758F7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F110279723D7A4B0000758F7 /* ViewController.swift */; };
+		F110279823D7A4B0000758F7 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F110279723D7A4B0000758F7 /* CollectionViewController.swift */; };
 		F110279B23D7A4B0000758F7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F110279923D7A4B0000758F7 /* Main.storyboard */; };
 		F110279D23D7A4B5000758F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F110279C23D7A4B5000758F7 /* Assets.xcassets */; };
 		F11027A023D7A4B5000758F7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F110279E23D7A4B5000758F7 /* LaunchScreen.storyboard */; };
 		F11027AB23D7A4B5000758F7 /* Pursuit_Core_iOS_PhotoJournal_AssignmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027AA23D7A4B5000758F7 /* Pursuit_Core_iOS_PhotoJournal_AssignmentTests.swift */; };
+		F11027E923DA3312000758F7 /* PhotosObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027E823DA3312000758F7 /* PhotosObject.swift */; };
+		F11027EB23DA33F0000758F7 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027EA23DA33F0000758F7 /* PhotoCell.swift */; };
+		F11027ED23DA3EE7000758F7 /* FileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027EC23DA3EE7000758F7 /* FileManager+Extensions.swift */; };
+		F11027EF23DA3FF5000758F7 /* PersistanceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027EE23DA3FF5000758F7 /* PersistanceHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,7 +34,7 @@
 		F110279023D7A4B0000758F7 /* Pursuit-Core-iOS-PhotoJournal-Assignment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pursuit-Core-iOS-PhotoJournal-Assignment.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F110279323D7A4B0000758F7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F110279523D7A4B0000758F7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		F110279723D7A4B0000758F7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F110279723D7A4B0000758F7 /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		F110279A23D7A4B0000758F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F110279C23D7A4B5000758F7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F110279F23D7A4B5000758F7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -38,6 +42,10 @@
 		F11027A623D7A4B5000758F7 /* Pursuit-Core-iOS-PhotoJournal-AssignmentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Pursuit-Core-iOS-PhotoJournal-AssignmentTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F11027AA23D7A4B5000758F7 /* Pursuit_Core_iOS_PhotoJournal_AssignmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pursuit_Core_iOS_PhotoJournal_AssignmentTests.swift; sourceTree = "<group>"; };
 		F11027AC23D7A4B5000758F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F11027E823DA3312000758F7 /* PhotosObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosObject.swift; sourceTree = "<group>"; };
+		F11027EA23DA33F0000758F7 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		F11027EC23DA3EE7000758F7 /* FileManager+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Extensions.swift"; sourceTree = "<group>"; };
+		F11027EE23DA3FF5000758F7 /* PersistanceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistanceHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,11 +87,12 @@
 		F110279223D7A4B0000758F7 /* Pursuit-Core-iOS-PhotoJournal-Assignment */ = {
 			isa = PBXGroup;
 			children = (
-				F110279323D7A4B0000758F7 /* AppDelegate.swift */,
-				F110279523D7A4B0000758F7 /* SceneDelegate.swift */,
-				F110279723D7A4B0000758F7 /* ViewController.swift */,
+				F11027E723DA32C4000758F7 /* Views */,
+				F11027E623DA32B5000758F7 /* Models */,
+				F11027E523DA3297000758F7 /* Data Persistance */,
+				F11027E323DA327D000758F7 /* Support Files */,
+				F11027E423DA3288000758F7 /* Controllers */,
 				F110279923D7A4B0000758F7 /* Main.storyboard */,
-				F110279C23D7A4B5000758F7 /* Assets.xcassets */,
 				F110279E23D7A4B5000758F7 /* LaunchScreen.storyboard */,
 				F11027A123D7A4B5000758F7 /* Info.plist */,
 			);
@@ -97,6 +106,49 @@
 				F11027AC23D7A4B5000758F7 /* Info.plist */,
 			);
 			path = "Pursuit-Core-iOS-PhotoJournal-AssignmentTests";
+			sourceTree = "<group>";
+		};
+		F11027E323DA327D000758F7 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				F110279323D7A4B0000758F7 /* AppDelegate.swift */,
+				F110279523D7A4B0000758F7 /* SceneDelegate.swift */,
+				F110279C23D7A4B5000758F7 /* Assets.xcassets */,
+			);
+			path = "Support Files";
+			sourceTree = "<group>";
+		};
+		F11027E423DA3288000758F7 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F110279723D7A4B0000758F7 /* CollectionViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		F11027E523DA3297000758F7 /* Data Persistance */ = {
+			isa = PBXGroup;
+			children = (
+				F11027EC23DA3EE7000758F7 /* FileManager+Extensions.swift */,
+				F11027EE23DA3FF5000758F7 /* PersistanceHelper.swift */,
+			);
+			path = "Data Persistance";
+			sourceTree = "<group>";
+		};
+		F11027E623DA32B5000758F7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F11027E823DA3312000758F7 /* PhotosObject.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F11027E723DA32C4000758F7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F11027EA23DA33F0000758F7 /* PhotoCell.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,9 +252,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F110279823D7A4B0000758F7 /* ViewController.swift in Sources */,
+				F11027EF23DA3FF5000758F7 /* PersistanceHelper.swift in Sources */,
+				F110279823D7A4B0000758F7 /* CollectionViewController.swift in Sources */,
+				F11027EB23DA33F0000758F7 /* PhotoCell.swift in Sources */,
+				F11027E923DA3312000758F7 /* PhotosObject.swift in Sources */,
 				F110279423D7A4B0000758F7 /* AppDelegate.swift in Sources */,
 				F110279623D7A4B0000758F7 /* SceneDelegate.swift in Sources */,
+				F11027ED23DA3EE7000758F7 /* FileManager+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
