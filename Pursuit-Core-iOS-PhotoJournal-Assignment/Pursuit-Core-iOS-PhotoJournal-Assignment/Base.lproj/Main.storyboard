@@ -59,34 +59,34 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8uO-VY-Cka">
-                                                    <rect key="frame" x="212" y="40" width="198" height="151.5"/>
+                                                    <rect key="frame" x="212" y="40" width="202" height="151.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Red" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aCG-DO-4SG">
-                                                            <rect key="frame" x="0.0" y="0.0" width="198" height="20.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="202" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="leS-7a-ED7">
-                                                            <rect key="frame" x="-2" y="20.5" width="202" height="31"/>
+                                                            <rect key="frame" x="-2" y="20.5" width="206" height="31"/>
                                                         </slider>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Green" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r6P-3C-OKo">
-                                                            <rect key="frame" x="0.0" y="50.5" width="198" height="20.5"/>
+                                                            <rect key="frame" x="0.0" y="50.5" width="202" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <color key="textColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="f4c-sZ-Yeh">
-                                                            <rect key="frame" x="-2" y="71" width="202" height="31"/>
+                                                            <rect key="frame" x="-2" y="71" width="206" height="31"/>
                                                         </slider>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Blue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bmk-Er-7gu">
-                                                            <rect key="frame" x="0.0" y="101" width="198" height="20.5"/>
+                                                            <rect key="frame" x="0.0" y="101" width="202" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <color key="textColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="THA-lG-9xX">
-                                                            <rect key="frame" x="-2" y="121.5" width="202" height="31"/>
+                                                            <rect key="frame" x="-2" y="121.5" width="206" height="31"/>
                                                         </slider>
                                                     </subviews>
                                                 </stackView>
@@ -202,16 +202,17 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="dWT-nj-svB" id="UgL-9f-4Mn"/>
+                        <outlet property="collectionViewLayout" destination="62v-EB-c6B" id="e0c-iQ-Aai"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1047.8260869565217" y="117.85714285714285"/>
         </scene>
-        <!--View Controller-->
+        <!--Add Photo Entry View Controller-->
         <scene sceneID="erd-0Y-6hS">
             <objects>
-                <viewController id="eKs-y1-Pzy" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddPhotoEntryViewController" id="eKs-y1-Pzy" customClass="AddPhotoEntryViewController" customModule="Pursuit_Core_iOS_PhotoJournal_Assignment" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="e12-k8-mCq">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

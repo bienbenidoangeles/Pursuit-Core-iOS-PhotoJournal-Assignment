@@ -19,6 +19,7 @@
 		F11027ED23DA3EE7000758F7 /* FileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027EC23DA3EE7000758F7 /* FileManager+Extensions.swift */; };
 		F11027EF23DA3FF5000758F7 /* PersistanceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027EE23DA3FF5000758F7 /* PersistanceHelper.swift */; };
 		F11027F223DA4B20000758F7 /* ViewController+ShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027F123DA4B20000758F7 /* ViewController+ShowAlert.swift */; };
+		F11027F423DA59B9000758F7 /* AddPhotoEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027F323DA59B9000758F7 /* AddPhotoEntryViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		F11027EC23DA3EE7000758F7 /* FileManager+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Extensions.swift"; sourceTree = "<group>"; };
 		F11027EE23DA3FF5000758F7 /* PersistanceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistanceHelper.swift; sourceTree = "<group>"; };
 		F11027F123DA4B20000758F7 /* ViewController+ShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ShowAlert.swift"; sourceTree = "<group>"; };
+		F11027F323DA59B9000758F7 /* AddPhotoEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoEntryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				F110279723D7A4B0000758F7 /* CollectionViewController.swift */,
+				F11027F323DA59B9000758F7 /* AddPhotoEntryViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -268,6 +271,7 @@
 				F11027EB23DA33F0000758F7 /* PhotoCell.swift in Sources */,
 				F11027E923DA3312000758F7 /* PhotosObject.swift in Sources */,
 				F11027F223DA4B20000758F7 /* ViewController+ShowAlert.swift in Sources */,
+				F11027F423DA59B9000758F7 /* AddPhotoEntryViewController.swift in Sources */,
 				F110279423D7A4B0000758F7 /* AppDelegate.swift in Sources */,
 				F110279623D7A4B0000758F7 /* SceneDelegate.swift in Sources */,
 				F11027ED23DA3EE7000758F7 /* FileManager+Extensions.swift in Sources */,
