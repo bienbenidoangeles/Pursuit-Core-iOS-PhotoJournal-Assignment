@@ -18,11 +18,12 @@ enum DataPersistanceError:Error{
 }
 
 class PersistanceHelper {
-    private var photoObjs = [Photo]()
+    private var photoObjs: [Photo]
     private var filename: String
     
     init(filename: String) {
       self.filename = filename
+        self.photoObjs = []
     }
     
     private func save() throws{
@@ -69,6 +70,25 @@ class PersistanceHelper {
         }
         
         return photoObjs
+    }
+    
+    @discardableResult
+    public func update(_ oldItem: Photo, _ newItem: Photo) -> Bool{
+        if let index = photoObjs.firstIndex(of: oldItem){
+            let result = update(newItem, at: index)
+            return result
+        }
+        return false
+    }
+    
+    public func update(_ insertNewItem: Photo, at index: Int) -> Bool{
+        photoObjs[index] = insertNewItem
+        do{
+            try save()
+            return true
+        } catch {
+            return false
+        }
     }
     
     public func delete(photo atIndex: Int) throws{

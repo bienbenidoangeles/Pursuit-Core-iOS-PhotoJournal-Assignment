@@ -42,6 +42,30 @@ class CollectionViewController: UIViewController {
         loadPhotoObjects()
     }
     
+    @IBAction func newPhotoToBeAdded(_ segue: UIStoryboardSegue) {
+        
+        //get a ref to the addPhotoJournalEntry instance
+        guard let addPhotoEntryController = segue.source as? AddPhotoEntryViewController, let newPhotoEntry = addPhotoEntryController.passedPhotoObj, !newPhotoEntry.photoTitle.isEmpty else { return  }
+        
+        if addPhotoEntryController.photoState == .existingPhoto {
+            let index = photoObjects.firstIndex {
+                $0.identifier == newPhotoEntry.identifier
+            }
+            guard let itemIndex = index else { return }
+            let oldPhotoEntry = photoObjects[itemIndex]
+            update(oldPhotoEntry: oldPhotoEntry, newPhotoEntry: newPhotoEntry)
+        } else {
+            //TODO: Create a create func
+        }
+        
+    }
+    
+    private func update(oldPhotoEntry: Photo, newPhotoEntry:Photo){
+        dataPeristance.update(oldPhotoEntry, newPhotoEntry)
+        loadPhotoObjects()
+    }
+    
+    
     private func changeScrollDirection(){
         
         if collectionViewScrollDirection == 0{

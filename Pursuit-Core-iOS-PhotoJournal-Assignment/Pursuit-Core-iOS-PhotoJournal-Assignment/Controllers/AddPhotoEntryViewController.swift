@@ -8,9 +8,16 @@
 
 import UIKit
 
+enum PhotoState{
+    case newPhoto
+    case existingPhoto
+}
+
 class AddPhotoEntryViewController: UIViewController {
     
     var passedPhotoObj:Photo?
+    
+    public private(set) var photoState = PhotoState.newPhoto
 
     override func viewDidLoad() {
         super.viewDidLoad()
