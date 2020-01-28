@@ -18,11 +18,11 @@ class PhotoCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     
-    weak var delegate: PhotoCellDelegate!
+    weak var delegate: PhotoCellDelegate?
     
     @IBAction func photoOptionsButtonPressed(_ sender: UIButton) {
         
-        delegate.didPressOptionalButton(self)
+        delegate?.didPressOptionalButton(self)
     }
     
     override func layoutSubviews() {

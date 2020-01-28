@@ -40,26 +40,28 @@ class CollectionViewController: UIViewController {
         // Do any additional setup after loading the view.
         updateUI()
         loadPhotoObjects()
+        delegatesAndDataSources()
     }
     
-    @IBAction func newPhotoToBeAdded(_ segue: UIStoryboardSegue) {
+    @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem){
+        guard let settingsViewController = self.storyboard?.instantiateViewController(identifier: "SettingsViewController") else {
+                   fatalError()
+               }
         
-        //get a ref to the addPhotoJournalEntry instance
-        guard let addPhotoEntryController = segue.source as? AddPhotoEntryViewController, let newPhotoEntry = addPhotoEntryController.passedPhotoObj, !newPhotoEntry.photoTitle.isEmpty else { return  }
-        
-        if addPhotoEntryController.photoState == .existingPhoto {
-            let index = photoObjects.firstIndex {
-                $0.identifier == newPhotoEntry.identifier
-            }
-            guard let itemIndex = index else { return }
-            let oldPhotoEntry = photoObjects[itemIndex]
-            update(oldPhotoEntry: oldPhotoEntry, newPhotoEntry: newPhotoEntry)
-        } else {
-            //TODO: Create a create func
+        //add delegate
+               present(settingsViewController, animated: true)
+    }
+    
+    @IBAction func addPhotoButtonPressed(_ sender: UIBarButtonItem) {
+        guard let addNewPhotoEntryVC = self.storyboard?.instantiateViewController(identifier: "AddPhotoEntryViewController") else {
+            fatalError()
         }
         
+        //add delegate
+        
+        present(addNewPhotoEntryVC, animated: true)
     }
-    
+
     private func update(oldPhotoEntry: Photo, newPhotoEntry:Photo){
         dataPeristance.update(oldPhotoEntry, newPhotoEntry)
         loadPhotoObjects()
@@ -87,6 +89,7 @@ class CollectionViewController: UIViewController {
     }
     
     private func updateUI(){
+        changeScrollDirection()
         collectionView.backgroundColor = bgColor
     }
     
