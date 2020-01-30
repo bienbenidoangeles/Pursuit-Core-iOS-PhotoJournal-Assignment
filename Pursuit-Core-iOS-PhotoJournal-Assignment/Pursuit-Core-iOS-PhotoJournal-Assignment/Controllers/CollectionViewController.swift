@@ -11,6 +11,10 @@ enum ScrollDirection:Int{
     case horizontal
 }
 
+protocol EditButtonOfCellDelegate: AnyObject {
+    func editButtonPressed(_ cellIndex: Int)
+}
+
 import UIKit
 
 class CollectionViewController: UIViewController {
@@ -24,6 +28,8 @@ class CollectionViewController: UIViewController {
             self.collectionViewLayout.invalidateLayout()
         }
     }
+    
+    private var dataPersistance = PersistanceHelper(filename: "PhotoJournalData.plist")
         
     private var photoObjects = [Photo](){
         didSet{
@@ -31,9 +37,9 @@ class CollectionViewController: UIViewController {
         }
     }
     
-    private var bgColor = UIColor()
+    //private var bgColor = UIColor()
     
-    private var dataPeristance = PersistanceHelper(filename: "PhotoJournalData.plist")
+    public weak var delegate:EditButtonOfCellDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,20 +59,15 @@ class CollectionViewController: UIViewController {
     }
     
     @IBAction func addPhotoButtonPressed(_ sender: UIBarButtonItem) {
-        guard let addNewPhotoEntryVC = self.storyboard?.instantiateViewController(identifier: "AddPhotoEntryViewController") else {
+        guard let addNewPhotoEntryVC = self.storyboard?.instantiateViewController(identifier: "AddPhotoEntryViewController") as? AddPhotoEntryViewController else {
             fatalError()
         }
         
         //add delegate
+        addNewPhotoEntryVC.delegate = self
         
         present(addNewPhotoEntryVC, animated: true)
     }
-
-    private func update(oldPhotoEntry: Photo, newPhotoEntry:Photo){
-        dataPeristance.update(oldPhotoEntry, newPhotoEntry)
-        loadPhotoObjects()
-    }
-    
     
     private func changeScrollDirection(){
         
@@ -81,7 +82,7 @@ class CollectionViewController: UIViewController {
     
     private func loadPhotoObjects(){
         do{
-            photoObjects = try dataPeristance.load()
+            photoObjects = try dataPersistance.load()
         } catch {
             //print("Load error")
             showAlert(title: "Load Error", message: "\(error)")
@@ -90,7 +91,7 @@ class CollectionViewController: UIViewController {
     
     private func updateUI(){
         changeScrollDirection()
-        collectionView.backgroundColor = bgColor
+        //collectionView.backgroundColor = bgColor
     }
     
     func delegatesAndDataSources(){
@@ -128,6 +129,12 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout{
     }
 }
 
+extension CollectionViewController:AddOrUpdatePhotoEntryDelegate{
+    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: Int) {
+        <#code#>
+    }
+}
+
 extension CollectionViewController: PhotoCellDelegate{
     func didPressOptionalButton(_ photoCell: PhotoCell) {
         guard let indexPath = collectionView.indexPath(for: photoCell) else {
@@ -141,7 +148,9 @@ extension CollectionViewController: PhotoCellDelegate{
             self?.deletePhotoPbj(indexPath: indexPath)
         }
         let editAction = UIAlertAction(title: "Edit", style: .default){[weak self]alertAction in
+            self?.delegate?.editButtonPressed(indexPath.row)
             self?.showCreatePhotoVC(selectedPhotoObj)
+            
         }
         let shareAction = UIAlertAction(title: "Share", style: .default, handler: nil)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -162,10 +171,10 @@ extension CollectionViewController: PhotoCellDelegate{
     }
     
     private func deletePhotoPbj(indexPath: IndexPath){
-        dataPeristance.sync(photoObjs: photoObjects)
+        dataPersistance.sync(photoObjs: photoObjects)
         
         do {
-            photoObjects = try dataPeristance.load()
+            photoObjects = try dataPersistance.load()
         } catch {
             showAlert(title: "Failed to load photos to delete", message: "\(error)")
         }
@@ -174,7 +183,7 @@ extension CollectionViewController: PhotoCellDelegate{
         collectionView.deleteItems(at: [indexPath])
         
         do{
-            try dataPeristance.delete(photo: indexPath.row)
+            try dataPersistance.delete(photo: indexPath.row)
         } catch {
             showAlert(title: "Deletion Error", message: "\(error)")
         }

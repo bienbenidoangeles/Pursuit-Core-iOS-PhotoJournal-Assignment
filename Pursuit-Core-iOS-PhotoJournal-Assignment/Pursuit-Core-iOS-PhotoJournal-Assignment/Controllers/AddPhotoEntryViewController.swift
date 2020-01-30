@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 enum PhotoState{
     case newPhoto
@@ -14,8 +15,7 @@ enum PhotoState{
 }
 
 protocol AddOrUpdatePhotoEntryDelegate: AnyObject {
-    func createdPhotoEntry(_ viewController: AddPhotoEntryViewController, _ newPhotoEntry: Photo)
-    func updatedPhotoEntry(_ viewController: AddPhotoEntryViewController,_ oldPhotoEntry: Photo, _ newPhotoEntry: Photo)
+    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: Int)
 }
 
 class AddPhotoEntryViewController: UIViewController {
@@ -30,6 +30,10 @@ class AddPhotoEntryViewController: UIViewController {
     var passedPhotoObj:Photo?
     var selectedImage: UIImage?
     
+    var selectedIndexAsInt:Int?
+    
+    private var dataPersistance = PersistanceHelper(filename: "PhotoJournalData.plist")
+    
     public private(set) var photoState = PhotoState.newPhoto
     
     weak var delegate: AddOrUpdatePhotoEntryDelegate?
@@ -38,12 +42,58 @@ class AddPhotoEntryViewController: UIViewController {
         super.viewDidLoad()
         saveButton.isEnabled = false
         delegatesAndDataSources()
-        didSaveButtonBecomeAvailable()
+        //didSaveButtonBecomeAvailable()
         didCameraButtonBecomeAvailable()
-        updateUI()
+        uiOnLoad()
+    }
+    
+    func returnPhotoEntry() -> Photo?{
+        guard let validImage = selectedImage else {
+            print("No image selected")
+            return nil
+        }
+        
+        let screenSize = UIScreen.main.bounds.size
+        let aspectRatioRect = AVMakeRect(aspectRatio: validImage.size, insideRect: CGRect(origin: CGPoint.zero, size: screenSize))
+        let resizedImage = validImage.resizeImage(to: aspectRatioRect.size.width, height: aspectRatioRect.size.height)
+        guard let resizedImageData = resizedImage.jpegData(compressionQuality: 1.0) else {
+            return nil
+        }
+        
+        let photoEntry = Photo(imageData: resizedImageData, photoTitle: photoEntryTextView.text, date: Date().description(with: .current))
+        return photoEntry
     }
     
     @IBAction func saveButtonPressed(_ sender: UIBarButtonItem) {
+        
+        guard let newPhotoEntry = returnPhotoEntry() else {
+            return
+        }
+        
+        guard let collectionVC = storyboard?.instantiateViewController(identifier: "CollectionViewController") as? CollectionViewController else {
+            fatalError("failed to downcast to AddPhotoEntryViewController")
+        }
+        
+
+        switch photoState {
+        case .newPhoto:
+            do {
+                try dataPersistance.create(photoObj: newPhotoEntry)
+                delegate?.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: 0)
+            } catch {
+                showAlert(title: "Failed to create", message: "\(error)")
+            }
+        case .existingPhoto:
+            collectionVC.delegate = self
+            guard let oldPhotoItem = passedPhotoObj else {
+                showAlert(title: "PHOTO STATE ERROR", message: "Passed Photo Object must not be nil is photoState is existing Photo")
+                fatalError("Passed Photo Object must not be nil is photoState is existing Photo")
+            }
+            dataPersistance.update(oldPhotoItem, newPhotoEntry)
+            delegate?.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: selectedIndexAsInt!)
+            
+            
+        }
         
     }
     
@@ -56,6 +106,7 @@ class AddPhotoEntryViewController: UIViewController {
     }
     
     @IBAction func cancelButtonPressed(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
     private func delegatesAndDataSources(){
@@ -82,38 +133,68 @@ class AddPhotoEntryViewController: UIViewController {
 
     }
     
+    private func uiOnLoad(){
+        photoEntryTextView.text = "Enter photo description"
+        photoEntryTextView.textColor = UIColor.lightGray
+        saveButton.title = "Save"
+        saveButton.isEnabled = false
+        photoEntryImageView.image = UIImage(systemName: "photo")
+    }
+    
     private func updateUI(){
-        guard let validPhoto = passedPhotoObj else {
-            fatalError("no photo was passed")
-        }
-        
         if photoState == .existingPhoto{
+            guard let validPhoto = passedPhotoObj else {
+                print("no photo was passed")
+                return
+            }
             photoEntryTextView.text = validPhoto.photoTitle
             photoEntryImageView.image = UIImage(data: validPhoto.imageData)
             saveButton.title = "Edit"
             didSaveButtonBecomeAvailable()
+        } else if photoState == .newPhoto {
+            saveButton.isEnabled = true
         }
     }
     
     private func didSaveButtonBecomeAvailable(){
-        guard selectedImage == nil && photoEntryTextView.text == nil else {
-            saveButton.isEnabled = true
+        
+        print(selectedImage, photoEntryTextView.text)
+        guard selectedImage != nil && photoEntryTextView.text != nil else {
+            saveButton.isEnabled = false
+            print("State of button should be closed", photoState)
             return
         }
+        updateUI()
+        print("State of button should be open", photoState)
+    }
+}
+
+extension AddPhotoEntryViewController: EditButtonOfCellDelegate{
+    func editButtonPressed(_ cellIndex: Int) {
+        
+        if photoState == .existingPhoto{
+            selectedIndexAsInt = cellIndex
+        } else if photoState == .newPhoto{
+            fatalError("Add Photo Entry VC is in the wrong photoState, should be as existingPhoto")
+        }
+        
     }
 }
 
 extension AddPhotoEntryViewController: UITextViewDelegate{
     func textViewDidBeginEditing(_ textView: UITextView) {
+        
         switch photoState{
         case .existingPhoto:
             break
         case .newPhoto:
-            if textView.text == "Enter photo description" && textView.textColor == .lightGray {
+            
+            if textView.text == "Enter photo description" && textView.textColor == UIColor.lightGray {
                 textView.text = ""
                 textView.textColor = UIColor.black
             }
         }
+        //print(photoState)
         didSaveButtonBecomeAvailable()
     }
     
@@ -137,6 +218,7 @@ extension AddPhotoEntryViewController: UIImagePickerControllerDelegate, UINaviga
         selectedImage = image
         photoEntryImageView.image = selectedImage
         didSaveButtonBecomeAvailable()
+        dismiss(animated: true, completion: nil)
     }
 }
 
