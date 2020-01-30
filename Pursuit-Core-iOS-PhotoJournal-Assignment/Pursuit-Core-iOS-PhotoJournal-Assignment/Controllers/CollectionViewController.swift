@@ -12,7 +12,7 @@ enum ScrollDirection:Int{
 }
 
 protocol EditButtonOfCellDelegate: AnyObject {
-    func editButtonPressed(_ cellIndex: Int)
+    func editButtonPressed(_ cellIndex: Int, photoObj: Photo)
 }
 
 import UIKit
@@ -64,7 +64,7 @@ class CollectionViewController: UIViewController {
         }
         
         //add delegate
-        addNewPhotoEntryVC.delegate = self
+//        addNewPhotoEntryVC.delegate = self
         
         present(addNewPhotoEntryVC, animated: true)
     }
@@ -129,11 +129,15 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout{
     }
 }
 
-extension CollectionViewController:AddOrUpdatePhotoEntryDelegate{
-    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: Int) {
-        <#code#>
-    }
-}
+//extension CollectionViewController:AddOrUpdatePhotoEntryDelegate{
+//    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: Int , photoState: PhotoState) {
+//        if photoState == .newPhoto{
+//            try? dataPersistance.create(photoObj: newPhotoEntry)
+//        } else if photoState == .existingPhoto {
+//            dataPersistance.update(newPhotoEntry, at: editedPhotoIndex)
+//        }
+//    }
+//}
 
 extension CollectionViewController: PhotoCellDelegate{
     func didPressOptionalButton(_ photoCell: PhotoCell) {
@@ -148,7 +152,7 @@ extension CollectionViewController: PhotoCellDelegate{
             self?.deletePhotoPbj(indexPath: indexPath)
         }
         let editAction = UIAlertAction(title: "Edit", style: .default){[weak self]alertAction in
-            self?.delegate?.editButtonPressed(indexPath.row)
+            self?.delegate?.editButtonPressed(indexPath.row, photoObj: selectedPhotoObj)
             self?.showCreatePhotoVC(selectedPhotoObj)
             
         }

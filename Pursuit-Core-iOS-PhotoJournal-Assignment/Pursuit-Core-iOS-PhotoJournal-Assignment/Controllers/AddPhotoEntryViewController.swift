@@ -14,9 +14,9 @@ enum PhotoState{
     case existingPhoto
 }
 
-protocol AddOrUpdatePhotoEntryDelegate: AnyObject {
-    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: Int)
-}
+//protocol AddOrUpdatePhotoEntryDelegate: AnyObject {
+//    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: Int, photoState: PhotoState)
+//}
 
 class AddPhotoEntryViewController: UIViewController {
     
@@ -36,7 +36,7 @@ class AddPhotoEntryViewController: UIViewController {
     
     public private(set) var photoState = PhotoState.newPhoto
     
-    weak var delegate: AddOrUpdatePhotoEntryDelegate?
+    //weak var delegate: AddOrUpdatePhotoEntryDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,7 +79,7 @@ class AddPhotoEntryViewController: UIViewController {
         case .newPhoto:
             do {
                 try dataPersistance.create(photoObj: newPhotoEntry)
-                delegate?.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: 0)
+//                delegate?.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: 0, photoState: photoState)
             } catch {
                 showAlert(title: "Failed to create", message: "\(error)")
             }
@@ -90,7 +90,7 @@ class AddPhotoEntryViewController: UIViewController {
                 fatalError("Passed Photo Object must not be nil is photoState is existing Photo")
             }
             dataPersistance.update(oldPhotoItem, newPhotoEntry)
-            delegate?.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: selectedIndexAsInt!)
+//            delegate?.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: selectedIndexAsInt!, photoState: photoState)
             
             
         }
@@ -134,23 +134,30 @@ class AddPhotoEntryViewController: UIViewController {
     }
     
     private func uiOnLoad(){
-        photoEntryTextView.text = "Enter photo description"
-        photoEntryTextView.textColor = UIColor.lightGray
-        saveButton.title = "Save"
-        saveButton.isEnabled = false
-        photoEntryImageView.image = UIImage(systemName: "photo")
-    }
-    
-    private func updateUI(){
-        if photoState == .existingPhoto{
+        if passedPhotoObj == nil{
+            photoState = .newPhoto
+            photoEntryTextView.text = "Enter photo description"
+            photoEntryTextView.textColor = UIColor.lightGray
+            saveButton.title = "Save"
+            saveButton.isEnabled = false
+            photoEntryImageView.image = UIImage(systemName: "photo")
+        } else {
+            photoState = .existingPhoto
             guard let validPhoto = passedPhotoObj else {
                 print("no photo was passed")
                 return
             }
             photoEntryTextView.text = validPhoto.photoTitle
+            photoEntryTextView.textColor = .black
             photoEntryImageView.image = UIImage(data: validPhoto.imageData)
             saveButton.title = "Edit"
-            didSaveButtonBecomeAvailable()
+        }
+        
+    }
+    
+    private func updateUI(){
+        if photoState == .existingPhoto{
+            saveButton.isEnabled = true
         } else if photoState == .newPhoto {
             saveButton.isEnabled = true
         }
@@ -159,21 +166,34 @@ class AddPhotoEntryViewController: UIViewController {
     private func didSaveButtonBecomeAvailable(){
         
         print(selectedImage, photoEntryTextView.text)
-        guard selectedImage != nil && photoEntryTextView.text != nil else {
-            saveButton.isEnabled = false
-            print("State of button should be closed", photoState)
-            return
+        switch photoState {
+        case .newPhoto:
+            guard selectedImage != nil && photoEntryTextView.text != nil else {
+                saveButton.isEnabled = false
+                print("State of button should be closed", photoState)
+                return
+            }
+            updateUI()
+            print("State of button should be open", photoState)
+        case .existingPhoto:
+            guard selectedImage != UIImage(data: passedPhotoObj!.imageData) && photoEntryTextView.text != passedPhotoObj?.photoTitle else {
+                saveButton.isEnabled = false
+                print("State of button should be closed", photoState)
+                return
+            }
+            updateUI()
+            print("State of button should be open", photoState)
         }
-        updateUI()
-        print("State of button should be open", photoState)
+        
     }
 }
 
 extension AddPhotoEntryViewController: EditButtonOfCellDelegate{
-    func editButtonPressed(_ cellIndex: Int) {
+    func editButtonPressed(_ cellIndex: Int, photoObj: Photo) {
         
         if photoState == .existingPhoto{
             selectedIndexAsInt = cellIndex
+            passedPhotoObj = photoObj
         } else if photoState == .newPhoto{
             fatalError("Add Photo Entry VC is in the wrong photoState, should be as existingPhoto")
         }
@@ -186,7 +206,7 @@ extension AddPhotoEntryViewController: UITextViewDelegate{
         
         switch photoState{
         case .existingPhoto:
-            break
+            didSaveButtonBecomeAvailable()
         case .newPhoto:
             
             if textView.text == "Enter photo description" && textView.textColor == UIColor.lightGray {
