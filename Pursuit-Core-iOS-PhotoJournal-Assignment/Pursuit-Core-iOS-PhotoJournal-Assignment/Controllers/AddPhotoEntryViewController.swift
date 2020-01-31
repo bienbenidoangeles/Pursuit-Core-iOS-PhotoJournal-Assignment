@@ -32,11 +32,12 @@ class AddPhotoEntryViewController: UIViewController {
     
     var selectedIndexAsInt:IndexPath?
     
-    private var dataPersistance = PersistanceHelper(filename: "PhotoJournalData.plist")
+    //private var dataPersistance = PersistanceHelper(filename: "PhotoJournalData.plist")
+    public var dataPersistence: PersistanceHelper!
     
     public private(set) var photoState = PhotoState.newPhoto
     
-    weak var delegate: AddOrUpdatePhotoEntryDelegate!
+    weak var delegate: AddOrUpdatePhotoEntryDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,8 +86,8 @@ class AddPhotoEntryViewController: UIViewController {
         switch photoState {
         case .newPhoto:
             do {
-                try dataPersistance.create(photoObj: newPhotoEntry)
-                delegate.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: nil, photoState: photoState)
+                try dataPersistence.create(photoObj: newPhotoEntry)
+                delegate!.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: nil, photoState: photoState)
             } catch {
                 showAlert(title: "Failed to create", message: "\(error)")
             }
@@ -98,7 +99,7 @@ class AddPhotoEntryViewController: UIViewController {
                 showAlert(title: "PHOTO STATE ERROR", message: "Passed Photo Object must not be nil is photoState is existing Photo")
                 fatalError("Passed Photo Object must not be nil is photoState is existing Photo")
             }
-            dataPersistance.update(oldPhotoItem, newPhotoEntry)
+            dataPersistence.update(oldPhotoItem, newPhotoEntry)
             //delegate.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: selectedIndexAsInt!, photoState: photoState)
             
             dismiss(animated: true, completion: nil)

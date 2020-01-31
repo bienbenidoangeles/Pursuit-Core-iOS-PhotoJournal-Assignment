@@ -63,7 +63,7 @@ class CollectionViewController: UIViewController {
         guard let addNewPhotoEntryVC = self.storyboard?.instantiateViewController(identifier: "AddPhotoEntryViewController") as? AddPhotoEntryViewController else {
             fatalError()
         }
-        
+        addNewPhotoEntryVC.dataPersistence = dataPersistance
         //add delegate
         addNewPhotoEntryVC.delegate = self
         
