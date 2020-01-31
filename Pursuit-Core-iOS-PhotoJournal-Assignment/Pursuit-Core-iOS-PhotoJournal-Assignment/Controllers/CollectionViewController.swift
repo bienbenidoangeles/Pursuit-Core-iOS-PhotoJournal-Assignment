@@ -12,7 +12,7 @@ enum ScrollDirection:Int{
 }
 
 protocol EditButtonOfCellDelegate: AnyObject {
-    func editButtonPressed(_ cellIndex: Int, photoObj: Photo)
+    func editButtonPressed(_ cellIndex: IndexPath, photoObj: Photo)
 }
 
 import UIKit
@@ -47,6 +47,7 @@ class CollectionViewController: UIViewController {
         updateUI()
         loadPhotoObjects()
         delegatesAndDataSources()
+        print(photoObjects.count)
     }
     
     @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem){
@@ -64,7 +65,7 @@ class CollectionViewController: UIViewController {
         }
         
         //add delegate
-//        addNewPhotoEntryVC.delegate = self
+        addNewPhotoEntryVC.delegate = self
         
         present(addNewPhotoEntryVC, animated: true)
     }
@@ -97,6 +98,11 @@ class CollectionViewController: UIViewController {
     func delegatesAndDataSources(){
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+//        guard let addPhotoEntryViewController = storyboard?.instantiateViewController(identifier: "AddPhotoEntryViewController") as? AddPhotoEntryViewController else {
+//            fatalError("failed to downcast to AddPhotoEntryViewController")
+//        }
+//        addPhotoEntryViewController.delegate = self
     }
 }
 
@@ -129,15 +135,19 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout{
     }
 }
 
-//extension CollectionViewController:AddOrUpdatePhotoEntryDelegate{
-//    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: Int , photoState: PhotoState) {
-//        if photoState == .newPhoto{
-//            try? dataPersistance.create(photoObj: newPhotoEntry)
-//        } else if photoState == .existingPhoto {
-//            dataPersistance.update(newPhotoEntry, at: editedPhotoIndex)
-//        }
-//    }
-//}
+extension CollectionViewController:AddOrUpdatePhotoEntryDelegate{
+    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: IndexPath?, photoState: PhotoState) {
+        print("row", editedPhotoIndex?.row, "section", editedPhotoIndex?.section)
+        if photoState == .newPhoto{
+            photoObjects.insert(newPhotoEntry, at: 0)
+            collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
+            //try? dataPersistance.create(photoObj: newPhotoEntry)
+        } else if photoState == .existingPhoto {
+            photoObjects.insert(newPhotoEntry, at: editedPhotoIndex!.row)
+            collectionView.insertItems(at: [editedPhotoIndex!])
+        }
+    }
+}
 
 extension CollectionViewController: PhotoCellDelegate{
     func didPressOptionalButton(_ photoCell: PhotoCell) {
@@ -152,7 +162,8 @@ extension CollectionViewController: PhotoCellDelegate{
             self?.deletePhotoPbj(indexPath: indexPath)
         }
         let editAction = UIAlertAction(title: "Edit", style: .default){[weak self]alertAction in
-            self?.delegate?.editButtonPressed(indexPath.row, photoObj: selectedPhotoObj)
+            //print("row", indexPath.row, "section", indexPath.section)
+            self?.delegate?.editButtonPressed(indexPath, photoObj: selectedPhotoObj)
             self?.showCreatePhotoVC(selectedPhotoObj)
             
         }
@@ -184,7 +195,7 @@ extension CollectionViewController: PhotoCellDelegate{
         }
         
         photoObjects.remove(at: indexPath.row)
-        collectionView.deleteItems(at: [indexPath])
+//        collectionView.deleteItems(at: [indexPath])
         
         do{
             try dataPersistance.delete(photo: indexPath.row)

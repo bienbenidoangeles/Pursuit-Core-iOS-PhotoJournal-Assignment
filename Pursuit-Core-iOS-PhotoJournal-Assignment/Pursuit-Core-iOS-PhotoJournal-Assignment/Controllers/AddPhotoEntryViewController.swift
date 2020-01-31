@@ -14,9 +14,9 @@ enum PhotoState{
     case existingPhoto
 }
 
-//protocol AddOrUpdatePhotoEntryDelegate: AnyObject {
-//    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: Int, photoState: PhotoState)
-//}
+protocol AddOrUpdatePhotoEntryDelegate: AnyObject {
+    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: IndexPath?, photoState: PhotoState)
+}
 
 class AddPhotoEntryViewController: UIViewController {
     
@@ -30,13 +30,13 @@ class AddPhotoEntryViewController: UIViewController {
     var passedPhotoObj:Photo?
     var selectedImage: UIImage?
     
-    var selectedIndexAsInt:Int?
+    var selectedIndexAsInt:IndexPath?
     
     private var dataPersistance = PersistanceHelper(filename: "PhotoJournalData.plist")
     
     public private(set) var photoState = PhotoState.newPhoto
     
-    //weak var delegate: AddOrUpdatePhotoEntryDelegate?
+    weak var delegate: AddOrUpdatePhotoEntryDelegate!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,14 +48,19 @@ class AddPhotoEntryViewController: UIViewController {
     }
     
     func returnPhotoEntry() -> Photo?{
-        guard let validImage = selectedImage else {
-            print("No image selected")
+//        guard let validSelectedImage = selectedImage else {
+//            print("No image selected")
+//            return nil
+//        }
+        
+        guard let validImageFromUI = photoEntryImageView.image else{
+            print("No image on uiimage element")
             return nil
         }
         
         let screenSize = UIScreen.main.bounds.size
-        let aspectRatioRect = AVMakeRect(aspectRatio: validImage.size, insideRect: CGRect(origin: CGPoint.zero, size: screenSize))
-        let resizedImage = validImage.resizeImage(to: aspectRatioRect.size.width, height: aspectRatioRect.size.height)
+        let aspectRatioRect = AVMakeRect(aspectRatio: validImageFromUI.size, insideRect: CGRect(origin: CGPoint.zero, size: screenSize))
+        let resizedImage = validImageFromUI.resizeImage(to: aspectRatioRect.size.width, height: aspectRatioRect.size.height)
         guard let resizedImageData = resizedImage.jpegData(compressionQuality: 1.0) else {
             return nil
         }
@@ -70,6 +75,8 @@ class AddPhotoEntryViewController: UIViewController {
             return
         }
         
+        print("Photo Title", newPhotoEntry.photoTitle)
+        
         guard let collectionVC = storyboard?.instantiateViewController(identifier: "CollectionViewController") as? CollectionViewController else {
             fatalError("failed to downcast to AddPhotoEntryViewController")
         }
@@ -79,10 +86,12 @@ class AddPhotoEntryViewController: UIViewController {
         case .newPhoto:
             do {
                 try dataPersistance.create(photoObj: newPhotoEntry)
-//                delegate?.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: 0, photoState: photoState)
+                delegate.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: nil, photoState: photoState)
             } catch {
                 showAlert(title: "Failed to create", message: "\(error)")
             }
+            
+            dismiss(animated: true, completion: nil)
         case .existingPhoto:
             collectionVC.delegate = self
             guard let oldPhotoItem = passedPhotoObj else {
@@ -90,9 +99,10 @@ class AddPhotoEntryViewController: UIViewController {
                 fatalError("Passed Photo Object must not be nil is photoState is existing Photo")
             }
             dataPersistance.update(oldPhotoItem, newPhotoEntry)
-//            delegate?.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: selectedIndexAsInt!, photoState: photoState)
+            //delegate.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: selectedIndexAsInt!, photoState: photoState)
             
-            
+            dismiss(animated: true, completion: nil)
+
         }
         
     }
@@ -156,11 +166,7 @@ class AddPhotoEntryViewController: UIViewController {
     }
     
     private func updateUI(){
-        if photoState == .existingPhoto{
-            saveButton.isEnabled = true
-        } else if photoState == .newPhoto {
-            saveButton.isEnabled = true
-        }
+        saveButton.isEnabled = true
     }
     
     private func didSaveButtonBecomeAvailable(){
@@ -168,28 +174,52 @@ class AddPhotoEntryViewController: UIViewController {
         print(selectedImage, photoEntryTextView.text)
         switch photoState {
         case .newPhoto:
-            guard selectedImage != nil && photoEntryTextView.text != nil else {
+            if selectedImage == nil && ((photoEntryTextView.text == "Enter photo description" || photoEntryTextView.text.isEmpty) && photoEntryTextView.textColor == UIColor.lightGray) {
                 saveButton.isEnabled = false
                 print("State of button should be closed", photoState)
-                return
+            } else {
+                updateUI()
+                print("State of button should be open", photoState)
             }
-            updateUI()
-            print("State of button should be open", photoState)
+//            guard selectedImage != nil && (photoEntryTextView.text != "Enter photo description" && photoEntryTextView.textColor != UIColor.lightGray) else {
+//                saveButton.isEnabled = false
+//                print("State of button should be closed", photoState)
+//                return
+//            }
+//            updateUI()
+//            print("State of button should be open", photoState)
         case .existingPhoto:
-            guard selectedImage != UIImage(data: passedPhotoObj!.imageData) && photoEntryTextView.text != passedPhotoObj?.photoTitle else {
+            
+//            if (photoEntryImageView.image!.isEqualToImage(UIImage(data: passedPhotoObj!.imageData)!)) {
+//                    print("works")
+//            } else {
+//                print("doesn't work")
+//            }
+            
+            
+            
+            if (
+                (photoEntryImageView.image!.isEqualToImage(UIImage(data: passedPhotoObj!.imageData)!)) &&
+                photoEntryTextView.text == passedPhotoObj?.photoTitle) {
                 saveButton.isEnabled = false
+                
+                
+                //print(!(photoEntryImageView.image!.isEqualToImage(UIImage(data: passedPhotoObj!.imageData)!))  && photoEntryTextView.text != passedPhotoObj?.photoTitle)
                 print("State of button should be closed", photoState)
-                return
+
+            } else {
+                updateUI()
+                //print((!photoEntryImageView.image!.isEqualToImage(UIImage(data: passedPhotoObj!.imageData)!))  && photoEntryTextView.text == passedPhotoObj?.photoTitle)
+                print("State of button should be open", photoState)
             }
-            updateUI()
-            print("State of button should be open", photoState)
+            
         }
         
     }
 }
 
 extension AddPhotoEntryViewController: EditButtonOfCellDelegate{
-    func editButtonPressed(_ cellIndex: Int, photoObj: Photo) {
+    func editButtonPressed(_ cellIndex: IndexPath, photoObj: Photo) {
         
         if photoState == .existingPhoto{
             selectedIndexAsInt = cellIndex
@@ -202,33 +232,50 @@ extension AddPhotoEntryViewController: EditButtonOfCellDelegate{
 }
 
 extension AddPhotoEntryViewController: UITextViewDelegate{
+    
+    func textViewDidChange(_ textView: UITextView) {
+        didSaveButtonBecomeAvailable()
+    }
+//        switch photoState{
+//        case .existingPhoto:
+//            didSaveButtonBecomeAvailable()
+//        case .newPhoto:
+//
+//            if textView.text == "Enter photo description" && textView.textColor == UIColor.lightGray {
+//                textView.text = ""
+//                textView.textColor = UIColor.black
+//            }
+//            didSaveButtonBecomeAvailable()
+//        }
+//    }
+    
     func textViewDidBeginEditing(_ textView: UITextView) {
-        
+
         switch photoState{
         case .existingPhoto:
             didSaveButtonBecomeAvailable()
         case .newPhoto:
-            
+
             if textView.text == "Enter photo description" && textView.textColor == UIColor.lightGray {
                 textView.text = ""
                 textView.textColor = UIColor.black
             }
+            didSaveButtonBecomeAvailable()
         }
         //print(photoState)
-        didSaveButtonBecomeAvailable()
     }
     
-    func textViewDidEndEditing(_ textView: UITextView) {
-        switch photoState{
-        case .existingPhoto:
-            break
-        case .newPhoto:
-            if textView.text == "" && textView.textColor == UIColor.black {
-                textView.text = "Enter photo description"
-                textView.textColor = UIColor.lightGray
-            }
-        }
-    }
+//    func textViewDidEndEditing(_ textView: UITextView) {
+//        switch photoState{
+//        case .existingPhoto:
+//            didSaveButtonBecomeAvailable()
+//        case .newPhoto:
+//            if textView.text == "" && textView.textColor == UIColor.black {
+//                textView.text = "Enter photo description"
+//                textView.textColor = UIColor.lightGray
+//            }
+//        }
+//    }
 }
 
 extension AddPhotoEntryViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{

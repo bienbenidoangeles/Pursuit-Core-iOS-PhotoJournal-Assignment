@@ -30,8 +30,9 @@ class PersistanceHelper {
         let url = FileManager.pathToDocumentsDirectory(with: filename)
         
         do {
+            
             let data = try PropertyListEncoder().encode(photoObjs)
-            try data.write(to: url)
+            try data.write(to: url, options: .atomic)
         } catch {
             throw DataPersistanceError.savingError(error)
         }
@@ -43,6 +44,7 @@ class PersistanceHelper {
     }
     
     public func create(photoObj: Photo) throws {
+        photoObjs = try load()
         photoObjs.append(photoObj)
         
         do {
@@ -93,7 +95,7 @@ class PersistanceHelper {
     
     public func delete(photo atIndex: Int) throws{
         photoObjs.remove(at: atIndex)
-        
+        print("atIndex", atIndex)
         do {
             try save()
         } catch {
