@@ -52,16 +52,24 @@ class CollectionViewController: UIViewController {
     }
     
     @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem){
-        guard let settingsViewController = self.storyboard?.instantiateViewController(identifier: "SettingsViewController") else {
-                   fatalError()
-               }
-        
-        //add delegate
-               present(settingsViewController, animated: true)
+        showSettings()
     }
     
     @IBAction func addPhotoButtonPressed(_ sender: UIBarButtonItem) {
        showAddPhotoEntryVC()
+    }
+    
+    private func showSettings(){
+        guard let settingsViewController = self.storyboard?.instantiateViewController(identifier: "SettingsViewController") as? SettingsTableViewController else {
+            fatalError()
+        }
+        
+        settingsViewController.delegate = self
+        
+        //add delegate
+        
+        
+        present(settingsViewController, animated: true)
     }
     
     private func showAddPhotoEntryVC(){
@@ -148,6 +156,13 @@ extension CollectionViewController:AddOrUpdatePhotoEntryDelegate{
             dataPersistance.update(oldPhotoEntry!, newPhotoEntry)
             loadPhotoObjects()
         }
+    }
+}
+
+extension CollectionViewController: SettingsButtonPressed{
+    func settingsParameters(_ scrollDirection: Int, _ bgColor: [CGFloat]) {
+        collectionViewScrollDirection = scrollDirection
+        view.backgroundColor = UIColor(displayP3Red: bgColor[0], green: bgColor[1], blue: bgColor[2], alpha: 1.0)
     }
 }
 

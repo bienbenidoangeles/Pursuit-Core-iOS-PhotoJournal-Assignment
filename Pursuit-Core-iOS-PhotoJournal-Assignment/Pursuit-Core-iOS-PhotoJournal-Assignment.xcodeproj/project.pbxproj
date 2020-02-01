@@ -21,6 +21,7 @@
 		F11027F223DA4B20000758F7 /* ViewController+ShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027F123DA4B20000758F7 /* ViewController+ShowAlert.swift */; };
 		F11027F423DA59B9000758F7 /* AddPhotoEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11027F323DA59B9000758F7 /* AddPhotoEntryViewController.swift */; };
 		F144934723E375FD00CBE76C /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F144934623E375FD00CBE76C /* UIImage+Extensions.swift */; };
+		F144939323E52AE300CBE76C /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F144939223E52AE300CBE76C /* SettingsTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		F11027F123DA4B20000758F7 /* ViewController+ShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ShowAlert.swift"; sourceTree = "<group>"; };
 		F11027F323DA59B9000758F7 /* AddPhotoEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoEntryViewController.swift; sourceTree = "<group>"; };
 		F144934623E375FD00CBE76C /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
+		F144939223E52AE300CBE76C /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 			children = (
 				F110279723D7A4B0000758F7 /* CollectionViewController.swift */,
 				F11027F323DA59B9000758F7 /* AddPhotoEntryViewController.swift */,
+				F144939223E52AE300CBE76C /* SettingsTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				F11027EF23DA3FF5000758F7 /* PersistanceHelper.swift in Sources */,
 				F110279823D7A4B0000758F7 /* CollectionViewController.swift in Sources */,
 				F11027EB23DA33F0000758F7 /* PhotoCell.swift in Sources */,
+				F144939323E52AE300CBE76C /* SettingsTableViewController.swift in Sources */,
 				F11027E923DA3312000758F7 /* PhotosObject.swift in Sources */,
 				F11027F223DA4B20000758F7 /* ViewController+ShowAlert.swift in Sources */,
 				F11027F423DA59B9000758F7 /* AddPhotoEntryViewController.swift in Sources */,
