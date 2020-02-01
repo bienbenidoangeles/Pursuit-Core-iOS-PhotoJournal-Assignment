@@ -71,6 +71,11 @@ class SettingsTableViewController: UITableViewController {
     
     func updateUI(){
         view.backgroundColor = UIColor(displayP3Red: CGFloat(redSlider.value), green: CGFloat(greenSlider.value), blue: CGFloat(blueSlider.value), alpha: 1.0)
+        
+        guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) else {
+            return
+        }
+        tableView(self.tableView, willDisplay: cell, forRowAt: IndexPath(row: 1, section: 0))
     }
     
     @IBAction func scrollDirectionChoosed(_ sender: UISegmentedControl) {
@@ -91,6 +96,12 @@ class SettingsTableViewController: UITableViewController {
     @IBAction func blueSlider(_ sender: UISlider) {
         color.blue = CGFloat((sender.value))
         delegate?.settingsParameters(selectDirection, [color.red, color.green, color.blue])
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if cell.reuseIdentifier == "BackGroundCell"{
+            cell.backgroundColor = UIColor(displayP3Red: CGFloat(redSlider.value), green: CGFloat(greenSlider.value), blue: CGFloat(blueSlider.value), alpha: 1.0)
+        }
     }
     
 //    // MARK: - Table view data source

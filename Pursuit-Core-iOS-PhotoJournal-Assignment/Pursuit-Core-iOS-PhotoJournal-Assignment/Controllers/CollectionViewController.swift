@@ -37,7 +37,11 @@ class CollectionViewController: UIViewController {
         }
     }
     
-    //private var bgColor = UIColor()
+    private var bgColorSettings:UIColor = .systemGray{
+        didSet{
+            view.backgroundColor = bgColorSettings
+        }
+    }
     
     //public weak var delegate:EditButtonOfCellDelegate?
     
@@ -65,7 +69,7 @@ class CollectionViewController: UIViewController {
         }
         
         settingsViewController.delegate = self
-        
+
         //add delegate
         
         
@@ -162,7 +166,7 @@ extension CollectionViewController:AddOrUpdatePhotoEntryDelegate{
 extension CollectionViewController: SettingsButtonPressed{
     func settingsParameters(_ scrollDirection: Int, _ bgColor: [CGFloat]) {
         collectionViewScrollDirection = scrollDirection
-        view.backgroundColor = UIColor(displayP3Red: bgColor[0], green: bgColor[1], blue: bgColor[2], alpha: 1.0)
+        bgColorSettings = UIColor(displayP3Red: bgColor[0], green: bgColor[1], blue: bgColor[2], alpha: 1.0)
     }
 }
 
