@@ -15,7 +15,7 @@ enum PhotoState{
 }
 
 protocol AddOrUpdatePhotoEntryDelegate: AnyObject {
-    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: IndexPath?, photoState: PhotoState)
+    func createOrUpdatePhotoEntry(_ oldPhotoEntry:Photo?, _ newPhotoEntry: Photo, photoState: PhotoState)
 }
 
 class AddPhotoEntryViewController: UIViewController {
@@ -27,13 +27,17 @@ class AddPhotoEntryViewController: UIViewController {
     @IBOutlet weak var cameraButton: UIBarButtonItem!
     private var imagePickerController = UIImagePickerController()
     
-    var passedPhotoObj:Photo?
+    var passedPhotoObj:Photo?{
+        didSet{
+            photoState = .existingPhoto
+        }
+    }
     var selectedImage: UIImage?
     
     var selectedIndexAsInt:IndexPath?
     
     //private var dataPersistance = PersistanceHelper(filename: "PhotoJournalData.plist")
-    public var dataPersistence: PersistanceHelper!
+    //public var passedDataPersistence: PersistanceHelper!
     
     public private(set) var photoState = PhotoState.newPhoto
     
@@ -71,13 +75,6 @@ class AddPhotoEntryViewController: UIViewController {
     }
     
     @IBAction func saveButtonPressed(_ sender: UIBarButtonItem) {
-        
-        guard let newPhotoEntry = returnPhotoEntry() else {
-            return
-        }
-        
-        print("Photo Title", newPhotoEntry.photoTitle)
-        
         guard let collectionVC = storyboard?.instantiateViewController(identifier: "CollectionViewController") as? CollectionViewController else {
             fatalError("failed to downcast to AddPhotoEntryViewController")
         }
@@ -85,22 +82,35 @@ class AddPhotoEntryViewController: UIViewController {
 
         switch photoState {
         case .newPhoto:
-            do {
-                try dataPersistence.create(photoObj: newPhotoEntry)
-                delegate!.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: nil, photoState: photoState)
-            } catch {
-                showAlert(title: "Failed to create", message: "\(error)")
+            guard let newPhotoEntry = returnPhotoEntry() else {
+                return
             }
+            print("Photo Obj", newPhotoEntry.description)
+            //do {
+                //print(passedDataPersistence.description)
+                //try passedDataPersistence.create(photoObj: newPhotoEntry)
+                delegate?.createOrUpdatePhotoEntry(nil, newPhotoEntry, photoState: photoState)
+            //} catch {
+               // showAlert(title: "Failed to create", message: "\(error)")
+            //}
             
             dismiss(animated: true, completion: nil)
         case .existingPhoto:
-            collectionVC.delegate = self
-            guard let oldPhotoItem = passedPhotoObj else {
-                showAlert(title: "PHOTO STATE ERROR", message: "Passed Photo Object must not be nil is photoState is existing Photo")
-                fatalError("Passed Photo Object must not be nil is photoState is existing Photo")
+            
+            //collectionVC.delegate = self
+//            guard let oldPhotoItem = passedPhotoObj else {
+//                showAlert(title: "PHOTO STATE ERROR", message: "Passed Photo Object must not be nil is photoState is existing Photo")
+//                fatalError("Passed Photo Object must not be nil is photoState is existing Photo")
+//            }
+            //passedDataPersistence.update(oldPhotoItem, newPhotoEntry)
+            guard let oldPhotoEntry = passedPhotoObj else {
+                return
             }
-            dataPersistence.update(oldPhotoItem, newPhotoEntry)
-            //delegate.createOrUpdatePhotoEntry(newPhotoEntry, editedPhotoIndex: selectedIndexAsInt!, photoState: photoState)
+            guard let newPhotoEntry = returnPhotoEntry() else {
+                return
+            }
+            print("Photo Obj", newPhotoEntry.description)
+            delegate?.createOrUpdatePhotoEntry(oldPhotoEntry,newPhotoEntry, photoState: photoState)
             
             dismiss(animated: true, completion: nil)
 
@@ -141,7 +151,6 @@ class AddPhotoEntryViewController: UIViewController {
         } else {
             cameraButton.isEnabled = false
         }
-
     }
     
     private func uiOnLoad(){
@@ -219,18 +228,17 @@ class AddPhotoEntryViewController: UIViewController {
     }
 }
 
-extension AddPhotoEntryViewController: EditButtonOfCellDelegate{
-    func editButtonPressed(_ cellIndex: IndexPath, photoObj: Photo) {
-        
-        if photoState == .existingPhoto{
-            selectedIndexAsInt = cellIndex
-            passedPhotoObj = photoObj
-        } else if photoState == .newPhoto{
-            fatalError("Add Photo Entry VC is in the wrong photoState, should be as existingPhoto")
-        }
-        
-    }
-}
+//extension AddPhotoEntryViewController: EditButtonOfCellDelegate{
+//    func editButtonPressed(photoObj: Photo) {
+//
+//        if photoState == .existingPhoto{
+//            passedPhotoObj = photoObj
+//        } else if photoState == .newPhoto{
+//            fatalError("Add Photo Entry VC is in the wrong photoState, should be as existingPhoto")
+//        }
+//
+//    }
+//}
 
 extension AddPhotoEntryViewController: UITextViewDelegate{
     

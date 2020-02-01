@@ -11,9 +11,9 @@ enum ScrollDirection:Int{
     case horizontal
 }
 
-protocol EditButtonOfCellDelegate: AnyObject {
-    func editButtonPressed(_ cellIndex: IndexPath, photoObj: Photo)
-}
+//protocol EditButtonOfCellDelegate: AnyObject {
+//    func editButtonPressed(photoObj: Photo)
+//}
 
 import UIKit
 
@@ -39,11 +39,12 @@ class CollectionViewController: UIViewController {
     
     //private var bgColor = UIColor()
     
-    public weak var delegate:EditButtonOfCellDelegate?
+    //public weak var delegate:EditButtonOfCellDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        print(dataPersistance.description)
         updateUI()
         loadPhotoObjects()
         delegatesAndDataSources()
@@ -60,13 +61,17 @@ class CollectionViewController: UIViewController {
     }
     
     @IBAction func addPhotoButtonPressed(_ sender: UIBarButtonItem) {
+       showAddPhotoEntryVC()
+    }
+    
+    private func showAddPhotoEntryVC(){
         guard let addNewPhotoEntryVC = self.storyboard?.instantiateViewController(identifier: "AddPhotoEntryViewController") as? AddPhotoEntryViewController else {
             fatalError()
         }
-        addNewPhotoEntryVC.dataPersistence = dataPersistance
+    
         //add delegate
         addNewPhotoEntryVC.delegate = self
-        
+               
         present(addNewPhotoEntryVC, animated: true)
     }
     
@@ -85,8 +90,8 @@ class CollectionViewController: UIViewController {
         do{
             photoObjects = try dataPersistance.load()
         } catch {
-            //print("Load error")
-            showAlert(title: "Load Error", message: "\(error)")
+            print("Load error: \(error)")
+            //showAlert(title: "Load Error", message: "\(error)")
         }
     }
     
@@ -98,11 +103,6 @@ class CollectionViewController: UIViewController {
     func delegatesAndDataSources(){
         collectionView.dataSource = self
         collectionView.delegate = self
-        
-//        guard let addPhotoEntryViewController = storyboard?.instantiateViewController(identifier: "AddPhotoEntryViewController") as? AddPhotoEntryViewController else {
-//            fatalError("failed to downcast to AddPhotoEntryViewController")
-//        }
-//        addPhotoEntryViewController.delegate = self
     }
 }
 
@@ -136,15 +136,17 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout{
 }
 
 extension CollectionViewController:AddOrUpdatePhotoEntryDelegate{
-    func createOrUpdatePhotoEntry(_ newPhotoEntry: Photo, editedPhotoIndex: IndexPath?, photoState: PhotoState) {
-        print("row", editedPhotoIndex?.row, "section", editedPhotoIndex?.section)
+    func createOrUpdatePhotoEntry(_ oldPhotoEntry: Photo?, _ newPhotoEntry: Photo, photoState: PhotoState) {
         if photoState == .newPhoto{
-            photoObjects.insert(newPhotoEntry, at: 0)
-            collectionView.insertItems(at: [IndexPath(row: 0, section: 0)])
-            //try? dataPersistance.create(photoObj: newPhotoEntry)
-        } else if photoState == .existingPhoto {
-            photoObjects.insert(newPhotoEntry, at: editedPhotoIndex!.row)
-            collectionView.insertItems(at: [editedPhotoIndex!])
+            photoObjects.append(newPhotoEntry)
+            do{
+                try dataPersistance.create(photoObj: newPhotoEntry)
+            } catch {
+                showAlert(title: "Saving Error", message: "\(error)")
+            }
+        } else if photoState == .existingPhoto{
+            dataPersistance.update(oldPhotoEntry!, newPhotoEntry)
+            loadPhotoObjects()
         }
     }
 }
@@ -163,23 +165,24 @@ extension CollectionViewController: PhotoCellDelegate{
         }
         let editAction = UIAlertAction(title: "Edit", style: .default){[weak self]alertAction in
             //print("row", indexPath.row, "section", indexPath.section)
-            self?.delegate?.editButtonPressed(indexPath, photoObj: selectedPhotoObj)
-            self?.showCreatePhotoVC(selectedPhotoObj)
+            self?.showCreatePhotoVC(selectedPhotoObj, indexPath)
             
         }
         let shareAction = UIAlertAction(title: "Share", style: .default, handler: nil)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        alertVC.addAction(deleteAction)
         alertVC.addAction(editAction)
+        alertVC.addAction(deleteAction)
         alertVC.addAction(shareAction)
         alertVC.addAction(cancelAction)
         present(alertVC, animated: true)
     }
     
-    private func showCreatePhotoVC(_ photoObj: Photo? = nil){
+    private func showCreatePhotoVC(_ photoObj: Photo? = nil, _ indexPath: IndexPath? = nil){
         guard let addPhotoEntryViewController = storyboard?.instantiateViewController(identifier: "AddPhotoEntryViewController") as? AddPhotoEntryViewController else {
             fatalError("failed to downcast to AddPhotoEntryViewController")
         }
+        //self.delegate?.editButtonPressed(photoObj: photoObj!)
+        addPhotoEntryViewController.delegate = self
         addPhotoEntryViewController.passedPhotoObj = photoObj
         present(addPhotoEntryViewController, animated: true, completion: nil)
         

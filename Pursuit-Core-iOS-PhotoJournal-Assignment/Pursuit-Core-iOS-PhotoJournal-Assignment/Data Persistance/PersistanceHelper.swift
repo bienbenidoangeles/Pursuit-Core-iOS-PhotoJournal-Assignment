@@ -17,7 +17,11 @@ enum DataPersistanceError:Error{
     case decodingError(Error)
 }
 
-class PersistanceHelper {
+class PersistanceHelper: CustomStringConvertible {
+    var description: String{
+        return "filename: \(filename), photoObjs: \(photoObjs)"
+    }
+    
     private var photoObjs: [Photo]
     private var filename: String
     
@@ -44,7 +48,7 @@ class PersistanceHelper {
     }
     
     public func create(photoObj: Photo) throws {
-        photoObjs = try load()
+        //photoObjs = try load()
         photoObjs.append(photoObj)
         
         do {
@@ -56,6 +60,7 @@ class PersistanceHelper {
     
     public func load() throws -> [Photo]{
         let url = FileManager.pathToDocumentsDirectory(with: filename)
+        print(url)
         if FileManager.default.fileExists(atPath: url.path){
             
             if let data = FileManager.default.contents(atPath: url.path){
