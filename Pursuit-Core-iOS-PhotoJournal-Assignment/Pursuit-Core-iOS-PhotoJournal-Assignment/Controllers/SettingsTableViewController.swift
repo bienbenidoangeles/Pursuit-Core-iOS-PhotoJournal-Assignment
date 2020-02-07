@@ -13,16 +13,20 @@ struct UserDefaultKeys {
     static let backgroundColor = "Background Color"
 }
 
-class Color {
-    var red:CGFloat
-    var blue:CGFloat
-    var green:CGFloat
-    
-    init(red: CGFloat, green: CGFloat, blue: CGFloat) {
-        self.red = red
-        self.green = green
-        self.blue = blue
+struct Color : CustomStringConvertible{
+    var description: String{
+        return "Red: \(red), Green: \(green), Blue: \(blue)"
     }
+    
+    var red:CGFloat
+    var green:CGFloat
+    var blue:CGFloat
+
+//    init(red: CGFloat, green: CGFloat, blue: CGFloat) {
+//        self.red = red
+//        self.green = green
+//        self.blue = blue
+//    }
 }
 
 protocol SettingsButtonPressed: AnyObject {
@@ -48,6 +52,7 @@ class SettingsTableViewController: UITableViewController {
     var color = Color(red: 0.0, green: 0.0, blue: 0.0){
         didSet{
             UserDefaults.standard.set([color.red, color.green, color.blue], forKey: UserDefaultKeys.backgroundColor)
+            print("SET:", color.description)
             updateUI()
         }
     }
@@ -56,8 +61,21 @@ class SettingsTableViewController: UITableViewController {
         super.viewDidLoad()
         configureSliderMinMaXVal()
         if let colorsSaved = UserDefaults.standard.object(forKey: UserDefaultKeys.backgroundColor) as? [CGFloat] {
-            view.backgroundColor = UIColor(displayP3Red: colorsSaved[0], green: colorsSaved[1], blue: colorsSaved[2], alpha: 1.0)
+            print("GET:", color.description)
+            redSlider.value = Float(colorsSaved[0])
+            color.red = colorsSaved[0]
+            greenSlider.value = Float(colorsSaved[1])
+            color.green = colorsSaved[1]
+            blueSlider.value = Float(colorsSaved[2])
+            color.blue = colorsSaved[2]
+
+            //view.backgroundColor = UIColor(displayP3Red: colorsSaved[0], green: colorsSaved[1], blue: colorsSaved[2], alpha: 1.0)
         }
+       
+        if let indexSaved = UserDefaults.standard.object(forKey: UserDefaultKeys.selectDirection) as? Int {
+            segmentedControl.selectedSegmentIndex = indexSaved
+        }
+    
     }
     
     func configureSliderMinMaXVal(){
@@ -70,7 +88,7 @@ class SettingsTableViewController: UITableViewController {
     }
     
     func updateUI(){
-        view.backgroundColor = UIColor(displayP3Red: CGFloat(redSlider.value), green: CGFloat(greenSlider.value), blue: CGFloat(blueSlider.value), alpha: 1.0)
+        //view.backgroundColor = UIColor(displayP3Red: CGFloat(redSlider.value), green: CGFloat(greenSlider.value), blue: CGFloat(blueSlider.value), alpha: 1.0)
         
         guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) else {
             return
@@ -103,72 +121,4 @@ class SettingsTableViewController: UITableViewController {
             cell.backgroundColor = UIColor(displayP3Red: CGFloat(redSlider.value), green: CGFloat(greenSlider.value), blue: CGFloat(blueSlider.value), alpha: 1.0)
         }
     }
-    
-//    // MARK: - Table view data source
-//
-//    override func numberOfSections(in tableView: UITableView) -> Int {
-//        // #warning Incomplete implementation, return the number of sections
-//        return 0
-//    }
-//
-//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        // #warning Incomplete implementation, return the number of rows
-//        return 0
-//    }
-
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
-    }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

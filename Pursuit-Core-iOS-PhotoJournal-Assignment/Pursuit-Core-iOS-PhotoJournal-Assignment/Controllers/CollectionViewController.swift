@@ -109,7 +109,9 @@ class CollectionViewController: UIViewController {
     
     private func updateUI(){
         changeScrollDirection()
-        //collectionView.backgroundColor = bgColor
+        if let bgColor = UserDefaults.standard.object(forKey: UserDefaultKeys.backgroundColor) as? [CGFloat]{
+            view.backgroundColor = UIColor(displayP3Red: bgColor[0], green: bgColor[1], blue: bgColor[2], alpha: 1.0)
+        }
     }
     
     func delegatesAndDataSources(){
